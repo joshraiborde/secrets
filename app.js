@@ -27,7 +27,7 @@ const userSchema = {
 // create a new mongoose model called User, based on the userSchema
 // collection name is "User"
 // specify the schema, userSchema
-const user = new mongoose.model("User", userSchema);
+const User = new mongoose.model("User", userSchema);
 
 app.get("/", (req, res) => {
   res.render("home");
