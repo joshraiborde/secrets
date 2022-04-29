@@ -56,6 +56,25 @@ app.post("/register", (req, res) => {
   });
 });
 
+app.post("/login", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  User.findOne({ email: username }, (err, foundUser) => {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundUser) {
+        //if the user if found in the databse, do the following
+        if (foundUser.password === password) {
+          //if the password typed in at login matches the password in the database (foundUser.password) do the following
+          res.render("secrets");
+        }
+      }
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log("Server is running on Port " + port + " on " + now.toUTCString());
 });
