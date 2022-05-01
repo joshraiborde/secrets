@@ -20,10 +20,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect("mongodb://localhost:27017/userDB", { useNewUrlParser: true });
 
 // create a new schema called userSchema
-const userSchema = {
+const userSchema = new mongoose.Schema ({
   email: String,
   password: String
-};
+});
+
+// define a secret
+const secret = process.env.SECRETS
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] }); //verify that this plugin is added before you create a mongoose model
+// only the password is encrypted
 
 // create a new mongoose model called User, based on the userSchema
 // collection name is "User"
