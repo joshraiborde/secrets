@@ -26,9 +26,8 @@ const userSchema = new mongoose.Schema ({
 });
 
 // define a secret
-// const SECRET = process.env.SECRETS
-const secret = "Ourlittlesecret."
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+const SECRET = process.env.SECRETS
+userSchema.plugin(encrypt, { secret: SECRET, encryptedFields: ["password"] });
 //verify that this plugin is added before you create a mongoose model
 // only the password is encrypted
 
