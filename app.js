@@ -26,8 +26,10 @@ const userSchema = new mongoose.Schema ({
 });
 
 // define a secret
-const secret = process.env.SECRETS
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] }); //verify that this plugin is added before you create a mongoose model
+// const SECRET = process.env.SECRETS
+const secret = "Ourlittlesecret."
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+//verify that this plugin is added before you create a mongoose model
 // only the password is encrypted
 
 // create a new mongoose model called User, based on the userSchema
