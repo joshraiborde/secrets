@@ -5,6 +5,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
 // const bcrypt = require('bcrypt')
 // const saltRounds = 10; // as recommended in the dox.
 // const md5 = require('md5');
@@ -20,6 +23,18 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// session
+app.use(session({
+  secret: "Our little secret.",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: true }
+}));
+
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // CONNECT to MONGOOSE, create a new database called userDB
 mongoose.connect("mongodb://localhost:27017/userDB", { useNewUrlParser: true });
 
@@ -28,6 +43,9 @@ const userSchema = new mongoose.Schema ({
   email: String,
   password: String
 });
+
+// this will hash and salt the passwords and save the users in MongoDB userDB database
+userSchema.plugin(passportLocalMongoose);
 
 // define a secret
 // const secret = process.env.SECRET
@@ -39,6 +57,11 @@ const userSchema = new mongoose.Schema ({
 // collection name is "User"
 // specify the schema, userSchema
 const User = new mongoose.model("User", userSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.get("/", (req, res) => {
   res.render("home");
