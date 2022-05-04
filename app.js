@@ -23,12 +23,14 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+const secret = process.env.SECRET
 // session
 app.use(session({
-  secret: "Our little secret.",
+  secret: secret,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: true }
+    // cookie: { secure: true } // this was causing issues, redirecting to /login instead of /secret and deauthenticating
 }));
 
 // passport
@@ -75,9 +77,27 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
+// this will check to see if the user is authenticated
+app.get("/secrets", (req, res) => {
+  if (req.isAuthenticated()){
+    res.render("secrets");
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.post("/register", (req, res) => {
 
-  
+  User.register({username: req.body.username}, req.body.password, (err, user) =>{
+    if (err) {
+      console.log(err)
+      res.redirect("/register");
+    } else {
+      passport.authenticate("local")(req, res, ()=>{
+        res.redirect("/secrets");
+      });
+    }
+  });  
 });
 
 app.post("/login", (req, res) => {
