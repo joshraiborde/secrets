@@ -9,6 +9,7 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const findOrCreate = require('mongoose-findorcreate')
 // const bcrypt = require('bcrypt')
 // const saltRounds = 10; // as recommended in the dox.
 // const md5 = require('md5');
@@ -49,6 +50,9 @@ const userSchema = new mongoose.Schema ({
 
 // this will hash and salt the passwords and save the users in MongoDB userDB database
 userSchema.plugin(passportLocalMongoose);
+
+// this is needed as part of the findOrCreate package.
+userSchema.plugin(findOrCreate)
 
 // define a secret
 // const secret = process.env.SECRET
